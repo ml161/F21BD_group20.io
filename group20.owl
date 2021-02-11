@@ -1,3 +1,4 @@
+@prefix : <http://www.semanticweb.org/owl/owlapi/turtle#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
@@ -9,7 +10,8 @@
 <https://Group20.github.io/ns/start/> rdf:type owl:Ontology ;
                                        dcterms:creator "Michael Pidgeon, Oluwole Ilesanmi, Manoj Sai Lankepalle"@en ;
                                        dcterms:description "This a group coursework for F21BD"@en ;
-                                       dcterms:title "Group 20 , CW-2" .
+                                       dcterms:title "Group 20 , CW-2" ;
+                                       owl:versionInfo "v1.1: remove all OOPS pitfalls." .
 
 #################################################################
 #    Annotation properties
@@ -42,176 +44,232 @@ dcterms:title rdf:type owl:AnnotationProperty .
 #    Object Properties
 #################################################################
 
-###  https://alasdairgray.github.io/ns/basic-university/classiffiedAs
+###  http://www.semanticweb.org/owl/owlapi/turtle#classiffiedAs
 :classiffiedAs rdf:type owl:ObjectProperty ;
-               rdfs:domain [ rdf:type owl:Restriction ;
-                             owl:onProperty :classiffiedAs ;
-                             owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-                             owl:onClass :Track
-                           ] ;
-               rdfs:range [ rdf:type owl:Restriction ;
-                            owl:onProperty :classiffiedAs ;
-                            owl:someValuesFrom :Genre
-                          ] .
+               rdfs:subPropertyOf owl:topObjectProperty ;
+               owl:inverseOf :classifies ;
+               rdfs:domain :Track ;
+               rdfs:range :Genre ;
+               rdfs:comment "Links a single track to its genre" ;
+               rdfs:label "ClassifiedAs" .
 
 
-###  https://alasdairgray.github.io/ns/basic-university/createdBy
+###  http://www.semanticweb.org/owl/owlapi/turtle#createdBy
 :createdBy rdf:type owl:ObjectProperty ;
-           rdfs:domain [ rdf:type owl:Restriction ;
-                         owl:onProperty :createdBy ;
-                         owl:someValuesFrom :Track
+           rdfs:subPropertyOf owl:topObjectProperty ;
+           owl:inverseOf :created ;
+           rdfs:domain [ rdf:type owl:Class ;
+                         owl:unionOf ( :Album
+                                       :Track
+                                     )
                        ] ;
-           rdfs:range [ rdf:type owl:Restriction ;
-                        owl:onProperty :createdBy ;
-                        owl:someValuesFrom :Artist
-                      ] .
+           rdfs:range :Artist ;
+           dcterms:description "Links a track or album to the artist(s) it was created by" ;
+           rdfs:label "CreatedBy" .
 
 
-###  https://alasdairgray.github.io/ns/basic-university/hasName
-:hasName rdf:type owl:ObjectProperty ;
-         rdfs:domain [ rdf:type owl:Restriction ;
-                       owl:onProperty :hasName ;
-                       owl:someValuesFrom :Track
-                     ] ;
-         rdfs:range [ rdf:type owl:Restriction ;
-                      owl:onProperty :hasName ;
-                      owl:someValuesFrom :Name
-                    ] .
+###  https://Group20.github.io/ns/start/classifies
+:classifies rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf owl:topObjectProperty ;
+            rdfs:domain :Genre ;
+            rdfs:range :Track ;
+            rdfs:comment "Links a genre to tracks it classifies" ;
+            rdfs:label "Classifies" .
 
 
-###  https://alasdairgray.github.io/ns/basic-university/isOwnedBy
-:isOwnedBy rdf:type owl:ObjectProperty ;
-           rdfs:domain [ rdf:type owl:Restriction ;
-                         owl:onProperty :isOwnedBy ;
-                         owl:someValuesFrom :RadioShow
-                       ] ;
-           rdfs:range [ rdf:type owl:Restriction ;
-                        owl:onProperty :isOwnedBy ;
-                        owl:someValuesFrom :Producer
-                      ] .
+###  https://Group20.github.io/ns/start/created
+:created rdf:type owl:ObjectProperty ;
+         rdfs:subPropertyOf owl:topObjectProperty ;
+         rdfs:domain :Artist ;
+         rdfs:range [ rdf:type owl:Class ;
+                      owl:unionOf ( :Album
+                                    :Track
+                                  )
+                    ] ;
+         rdfs:comment "Links an artist to a track or album they created" ;
+         rdfs:label "Created" .
 
 
-###  https://alasdairgray.github.io/ns/basic-university/play
-:play rdf:type owl:ObjectProperty ;
-      rdfs:domain [ rdf:type owl:Restriction ;
-                    owl:onProperty :play ;
-                    owl:someValuesFrom :Dj
-                  ] ;
-      rdfs:range [ rdf:type owl:Restriction ;
-                   owl:onProperty :play ;
-                   owl:someValuesFrom :Track
-                 ] .
+###  https://Group20.github.io/ns/start/djFor
+:djFor rdf:type owl:ObjectProperty ;
+       rdfs:subPropertyOf owl:topObjectProperty ;
+       owl:inverseOf :hasDj ;
+       rdfs:domain <http://xmlns.com/foaf/0.1/Person> ;
+       rdfs:range :RadioShow ;
+       rdfs:label "DJFor" .
 
 
-###  https://alasdairgray.github.io/ns/basic-university/worksAt
-:worksAt rdf:type owl:ObjectProperty ,
-                  owl:FunctionalProperty ;
-         rdfs:domain [ rdf:type owl:Restriction ;
-                       owl:onProperty :worksAt ;
-                       owl:someValuesFrom <http://www.w3.org/2000/10/swap/pim/contact#Person>
-                     ] ;
-         rdfs:range [ rdf:type owl:Restriction ;
-                      owl:onProperty :worksAt ;
-                      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-                      owl:onClass :RadioStation
-                    ] .
+###  https://Group20.github.io/ns/start/hasDj
+:hasDj rdf:type owl:ObjectProperty ;
+       rdfs:subPropertyOf owl:topObjectProperty ;
+       rdfs:domain :RadioShow ;
+       rdfs:range <http://xmlns.com/foaf/0.1/Person> ;
+       rdfs:label "HasDJ" .
+
+
+###  https://Group20.github.io/ns/start/hasProducer
+:hasProducer rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf owl:topObjectProperty ;
+             owl:inverseOf :producerFor ;
+             rdfs:domain :RadioShow ;
+             rdfs:range <http://xmlns.com/foaf/0.1/Person> ;
+             rdfs:label "HasProducer" .
+
+
+###  https://Group20.github.io/ns/start/hasShow
+:hasShow rdf:type owl:ObjectProperty ;
+         rdfs:subPropertyOf owl:topObjectProperty ;
+         owl:inverseOf :onStation ;
+         rdfs:domain :RadioStation ;
+         rdfs:range :RadioShow ;
+         rdfs:label "HasShow" .
+
+
+###  https://Group20.github.io/ns/start/hasTechnician
+:hasTechnician rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf owl:topObjectProperty ;
+               owl:inverseOf :technicianFor ;
+               rdfs:domain :RadioShow ;
+               rdfs:range <http://xmlns.com/foaf/0.1/Person> ;
+               rdfs:label "HasTechnician" .
+
+
+###  https://Group20.github.io/ns/start/onStation
+:onStation rdf:type owl:ObjectProperty ;
+           rdfs:subPropertyOf owl:topObjectProperty ;
+           rdfs:domain :RadioShow ;
+           rdfs:range :RadioStation ;
+           rdfs:label "OnStation" .
+
+
+###  https://Group20.github.io/ns/start/producerFor
+:producerFor rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf owl:topObjectProperty ;
+             rdfs:domain <http://xmlns.com/foaf/0.1/Person> ;
+             rdfs:range :RadioShow ;
+             rdfs:label "ProducerFor" .
+
+
+###  https://Group20.github.io/ns/start/technicianFor
+:technicianFor rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf owl:topObjectProperty ;
+               rdfs:domain <http://xmlns.com/foaf/0.1/Person> ;
+               rdfs:range :RadioShow ;
+               rdfs:label "TechnicianFor" .
 
 
 #################################################################
 #    Data properties
 #################################################################
 
-###  https://alasdairgray.github.io/ns/basic-university/playedOn
+###  http://www.semanticweb.org/owl/owlapi/turtle#playedOn
 :playedOn rdf:type owl:DatatypeProperty ;
-          rdfs:range xsd:dateTime .
+          rdfs:domain :TrackPlay ;
+          rdfs:range xsd:dateTime ;
+          rdfs:comment "Date and time a track was played on the radio" ;
+          rdfs:label "Played on" .
 
 
 #################################################################
 #    Classes
 #################################################################
 
+###  http://www.semanticweb.org/owl/owlapi/turtle#Album
+:Album rdf:type owl:Class ;
+       owl:disjointWith :Genre ,
+                        :RadioShow ,
+                        :RadioStation ,
+                        :Track ,
+                        <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
+                        <http://xmlns.com/foaf/0.1/Person> ,
+                        :Artist ;
+       rdfs:comment "A music album." ;
+       rdfs:label "Album" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#Blues
+:Blues rdf:type owl:Class ;
+       rdfs:subClassOf :Genre ;
+       rdfs:label "Blues" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#Genre
+:Genre rdf:type owl:Class ;
+       owl:disjointWith :RadioShow ,
+                        :RadioStation ,
+                        :Track ,
+                        <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
+                        <http://xmlns.com/foaf/0.1/Person> ,
+                        :Artist ;
+       rdfs:comment "A music genre." ;
+       rdfs:label "Genre" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#Jazz
+:Jazz rdf:type owl:Class ;
+      rdfs:subClassOf :Genre ;
+      rdfs:label "Jazz" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#RadioShow
+:RadioShow rdf:type owl:Class ;
+           owl:disjointWith :RadioStation ,
+                            :Track ,
+                            <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
+                            <http://xmlns.com/foaf/0.1/Person> ,
+                            :Artist ;
+           rdfs:comment "A show created by poeple in a radio station." ;
+           rdfs:label "RadioShow" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#RadioStation
+:RadioStation rdf:type owl:Class ;
+              owl:disjointWith <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
+                               <http://xmlns.com/foaf/0.1/Person> ;
+              rdfs:comment "A radio station." ;
+              rdfs:label "RadioStation" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#Rock
+:Rock rdf:type owl:Class ;
+      rdfs:subClassOf :Genre ;
+      rdfs:label "Rock" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#Track
+:Track rdf:type owl:Class ;
+       owl:disjointWith <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
+                        <http://xmlns.com/foaf/0.1/Person> ,
+                        :Artist ;
+       rdfs:comment "A music track." ;
+       rdfs:label "Track" .
+
+
 ###  http://www.w3.org/2000/10/swap/pim/contact#Person
 <http://www.w3.org/2000/10/swap/pim/contact#Person> rdf:type owl:Class ;
                                                     owl:equivalentClass <http://xmlns.com/foaf/0.1/Person> ;
+                                                    owl:disjointWith :Artist ;
                                                     rdfs:comment "A person." ;
                                                     rdfs:label "Person" .
 
 
 ###  http://xmlns.com/foaf/0.1/Person
 <http://xmlns.com/foaf/0.1/Person> rdf:type owl:Class ;
+                                   owl:disjointWith :Artist ;
                                    rdfs:comment "A person." ;
                                    rdfs:label "Person" .
 
 
-###  https://alasdairgray.github.io/ns/basic-university/Album
-:Album rdf:type owl:Class ;
-       rdfs:comment "A music album." ;
-       rdfs:label "Album" .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/Artist
+###  https://Group20.github.io/ns/start/Artist
 :Artist rdf:type owl:Class ;
-        rdfs:subClassOf <http://www.w3.org/2000/10/swap/pim/contact#Person> .
+        rdfs:comment "A music artist, including those with only one member" ;
+        rdfs:label "Artist" .
 
 
-###  https://alasdairgray.github.io/ns/basic-university/Blues
-:Blues rdf:type owl:Class ;
-       rdfs:subClassOf :Genre .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/Dj
-:Dj rdf:type owl:Class ;
-    rdfs:subClassOf <http://www.w3.org/2000/10/swap/pim/contact#Person> .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/Genre
-:Genre rdf:type owl:Class ;
-       rdfs:comment "A music genre." ;
-       rdfs:label "Genre" .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/Jazz
-:Jazz rdf:type owl:Class ;
-      rdfs:subClassOf :Genre .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/Name
-:Name rdf:type owl:Class ;
-      rdfs:comment "A music track name." ;
-      rdfs:label "Name" .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/Producer
-:Producer rdf:type owl:Class ;
-          rdfs:subClassOf <http://www.w3.org/2000/10/swap/pim/contact#Person> .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/RadioShow
-:RadioShow rdf:type owl:Class ;
-           rdfs:comment "A show created by poeple in a radio station." ;
-           rdfs:label "RadioShow" .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/RadioStation
-:RadioStation rdf:type owl:Class ;
-              rdfs:comment "A radio station." ;
-              rdfs:label "RadioStation" .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/Rock
-:Rock rdf:type owl:Class ;
-      rdfs:subClassOf :Genre .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/Technician
-:Technician rdf:type owl:Class ;
-            rdfs:subClassOf <http://www.w3.org/2000/10/swap/pim/contact#Person> .
-
-
-###  https://alasdairgray.github.io/ns/basic-university/Track
-:Track rdf:type owl:Class ;
-       rdfs:comment "A music track." ;
-       rdfs:label "Track" .
+###  https://Group20.github.io/ns/start/TrackPlay
+:TrackPlay rdf:type owl:Class ;
+           rdfs:comment "A track play, by a radio station at a given time" ;
+           rdfs:label "TrackPlay" .
 
 
 #################################################################
