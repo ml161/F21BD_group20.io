@@ -9,8 +9,8 @@
 
 <https://Group20.github.io/ns/start/> rdf:type owl:Ontology ;
                                        dcterms:creator "Michael Pidgeon, Oluwole Ilesanmi, Manoj Sai Lankepalle"@en ;
-                                       dcterms:description "This a group coursework for F21BD"@en ;
-                                       dcterms:title "Group 20 , CW-2" ;
+                                       dcterms:description "This a group coursework-1 for F21BD"@en ;
+                                       dcterms:title "Group 20 , CW-1 , Group work" ;
                                        owl:versionInfo "v1.1: remove all OOPS pitfalls." .
 
 #################################################################
@@ -54,21 +54,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
                rdfs:label "ClassifiedAs" .
 
 
-###  http://www.semanticweb.org/owl/owlapi/turtle#createdBy
-:createdBy rdf:type owl:ObjectProperty ;
-           rdfs:subPropertyOf owl:topObjectProperty ;
-           owl:inverseOf :created ;
-           rdfs:domain [ rdf:type owl:Class ;
-                         owl:unionOf ( :Album
-                                       :Track
-                                     )
-                       ] ;
-           rdfs:range :Artist ;
-           dcterms:description "Links a track or album to the artist(s) it was created by" ;
-           rdfs:label "CreatedBy" .
-
-
-###  https://Group20.github.io/ns/start/classifies
+###  http://www.semanticweb.org/owl/owlapi/turtle#classifies
 :classifies rdf:type owl:ObjectProperty ;
             rdfs:subPropertyOf owl:topObjectProperty ;
             rdfs:domain :Genre ;
@@ -77,9 +63,10 @@ dcterms:title rdf:type owl:AnnotationProperty .
             rdfs:label "Classifies" .
 
 
-###  https://Group20.github.io/ns/start/created
+###  http://www.semanticweb.org/owl/owlapi/turtle#created
 :created rdf:type owl:ObjectProperty ;
          rdfs:subPropertyOf owl:topObjectProperty ;
+         owl:inverseOf :createdBy ;
          rdfs:domain :Artist ;
          rdfs:range [ rdf:type owl:Class ;
                       owl:unionOf ( :Album
@@ -90,7 +77,20 @@ dcterms:title rdf:type owl:AnnotationProperty .
          rdfs:label "Created" .
 
 
-###  https://Group20.github.io/ns/start/djFor
+###  http://www.semanticweb.org/owl/owlapi/turtle#createdBy
+:createdBy rdf:type owl:ObjectProperty ;
+           rdfs:subPropertyOf owl:topObjectProperty ;
+           rdfs:domain [ rdf:type owl:Class ;
+                         owl:unionOf ( :Album
+                                       :Track
+                                     )
+                       ] ;
+           rdfs:range :Artist ;
+           dcterms:description "Links a track or album to the artist(s) it was created by" ;
+           rdfs:label "CreatedBy" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#djFor
 :djFor rdf:type owl:ObjectProperty ;
        rdfs:subPropertyOf owl:topObjectProperty ;
        owl:inverseOf :hasDj ;
@@ -99,7 +99,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
        rdfs:label "DJFor" .
 
 
-###  https://Group20.github.io/ns/start/hasDj
+###  http://www.semanticweb.org/owl/owlapi/turtle#hasDj
 :hasDj rdf:type owl:ObjectProperty ;
        rdfs:subPropertyOf owl:topObjectProperty ;
        rdfs:domain :RadioShow ;
@@ -107,7 +107,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
        rdfs:label "HasDJ" .
 
 
-###  https://Group20.github.io/ns/start/hasProducer
+###  http://www.semanticweb.org/owl/owlapi/turtle#hasProducer
 :hasProducer rdf:type owl:ObjectProperty ;
              rdfs:subPropertyOf owl:topObjectProperty ;
              owl:inverseOf :producerFor ;
@@ -116,7 +116,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
              rdfs:label "HasProducer" .
 
 
-###  https://Group20.github.io/ns/start/hasShow
+###  http://www.semanticweb.org/owl/owlapi/turtle#hasShow
 :hasShow rdf:type owl:ObjectProperty ;
          rdfs:subPropertyOf owl:topObjectProperty ;
          owl:inverseOf :onStation ;
@@ -125,7 +125,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
          rdfs:label "HasShow" .
 
 
-###  https://Group20.github.io/ns/start/hasTechnician
+###  http://www.semanticweb.org/owl/owlapi/turtle#hasTechnician
 :hasTechnician rdf:type owl:ObjectProperty ;
                rdfs:subPropertyOf owl:topObjectProperty ;
                owl:inverseOf :technicianFor ;
@@ -134,7 +134,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
                rdfs:label "HasTechnician" .
 
 
-###  https://Group20.github.io/ns/start/onStation
+###  http://www.semanticweb.org/owl/owlapi/turtle#onStation
 :onStation rdf:type owl:ObjectProperty ;
            rdfs:subPropertyOf owl:topObjectProperty ;
            rdfs:domain :RadioShow ;
@@ -142,7 +142,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
            rdfs:label "OnStation" .
 
 
-###  https://Group20.github.io/ns/start/producerFor
+###  http://www.semanticweb.org/owl/owlapi/turtle#producerFor
 :producerFor rdf:type owl:ObjectProperty ;
              rdfs:subPropertyOf owl:topObjectProperty ;
              rdfs:domain <http://xmlns.com/foaf/0.1/Person> ;
@@ -150,7 +150,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
              rdfs:label "ProducerFor" .
 
 
-###  https://Group20.github.io/ns/start/technicianFor
+###  http://www.semanticweb.org/owl/owlapi/turtle#technicianFor
 :technicianFor rdf:type owl:ObjectProperty ;
                rdfs:subPropertyOf owl:topObjectProperty ;
                rdfs:domain <http://xmlns.com/foaf/0.1/Person> ;
@@ -176,15 +176,26 @@ dcterms:title rdf:type owl:AnnotationProperty .
 
 ###  http://www.semanticweb.org/owl/owlapi/turtle#Album
 :Album rdf:type owl:Class ;
-       owl:disjointWith :Genre ,
+       owl:disjointWith :Artist ,
+                        :Genre ,
                         :RadioShow ,
                         :RadioStation ,
                         :Track ,
                         <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
-                        <http://xmlns.com/foaf/0.1/Person> ,
-                        :Artist ;
+                        <http://xmlns.com/foaf/0.1/Person> ;
        rdfs:comment "A music album." ;
        rdfs:label "Album" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#Artist
+:Artist rdf:type owl:Class ;
+        owl:disjointWith :Genre ,
+                         :RadioShow ,
+                         :Track ,
+                         <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
+                         <http://xmlns.com/foaf/0.1/Person> ;
+        rdfs:comment "A music artist, including those with only one member" ;
+        rdfs:label "Artist" .
 
 
 ###  http://www.semanticweb.org/owl/owlapi/turtle#Blues
@@ -199,8 +210,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
                         :RadioStation ,
                         :Track ,
                         <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
-                        <http://xmlns.com/foaf/0.1/Person> ,
-                        :Artist ;
+                        <http://xmlns.com/foaf/0.1/Person> ;
        rdfs:comment "A music genre." ;
        rdfs:label "Genre" .
 
@@ -216,8 +226,7 @@ dcterms:title rdf:type owl:AnnotationProperty .
            owl:disjointWith :RadioStation ,
                             :Track ,
                             <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
-                            <http://xmlns.com/foaf/0.1/Person> ,
-                            :Artist ;
+                            <http://xmlns.com/foaf/0.1/Person> ;
            rdfs:comment "A show created by poeple in a radio station." ;
            rdfs:label "RadioShow" .
 
@@ -239,37 +248,28 @@ dcterms:title rdf:type owl:AnnotationProperty .
 ###  http://www.semanticweb.org/owl/owlapi/turtle#Track
 :Track rdf:type owl:Class ;
        owl:disjointWith <http://www.w3.org/2000/10/swap/pim/contact#Person> ,
-                        <http://xmlns.com/foaf/0.1/Person> ,
-                        :Artist ;
+                        <http://xmlns.com/foaf/0.1/Person> ;
        rdfs:comment "A music track." ;
        rdfs:label "Track" .
+
+
+###  http://www.semanticweb.org/owl/owlapi/turtle#TrackPlay
+:TrackPlay rdf:type owl:Class ;
+           rdfs:comment "A track play, by a radio station at a given time" ;
+           rdfs:label "TrackPlay" .
 
 
 ###  http://www.w3.org/2000/10/swap/pim/contact#Person
 <http://www.w3.org/2000/10/swap/pim/contact#Person> rdf:type owl:Class ;
                                                     owl:equivalentClass <http://xmlns.com/foaf/0.1/Person> ;
-                                                    owl:disjointWith :Artist ;
                                                     rdfs:comment "A person." ;
                                                     rdfs:label "Person" .
 
 
 ###  http://xmlns.com/foaf/0.1/Person
 <http://xmlns.com/foaf/0.1/Person> rdf:type owl:Class ;
-                                   owl:disjointWith :Artist ;
                                    rdfs:comment "A person." ;
                                    rdfs:label "Person" .
-
-
-###  https://Group20.github.io/ns/start/Artist
-:Artist rdf:type owl:Class ;
-        rdfs:comment "A music artist, including those with only one member" ;
-        rdfs:label "Artist" .
-
-
-###  https://Group20.github.io/ns/start/TrackPlay
-:TrackPlay rdf:type owl:Class ;
-           rdfs:comment "A track play, by a radio station at a given time" ;
-           rdfs:label "TrackPlay" .
 
 
 #################################################################
@@ -421,8 +421,8 @@ owl:Thing rdfs:label "Thing" .
                                      rdfs:comment "A homepage for some thing." .
 
 
-<http://xmlns.com/foaf/0.1/icqChatID> rdfs:comment "An ICQ chat ID" ;
-                                      rdfs:label "ICQ chat ID" .
+<http://xmlns.com/foaf/0.1/icqChatID> rdfs:label "ICQ chat ID" ;
+                                      rdfs:comment "An ICQ chat ID" .
 
 
 <http://xmlns.com/foaf/0.1/img> rdfs:label "image" ;
