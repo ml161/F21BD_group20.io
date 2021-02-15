@@ -12,7 +12,8 @@
                                                      dcterms:description "This a group coursework-1 for F21BD"@en ;
                                                      dcterms:title "Group 20 , CW-1 , Group work" ;
                                                      owl:versionInfo "v1.1: remove all OOPS pitfalls." ,
-                                                                     "v1.2: add additional genres. Add TrackPlay and associated object properties. Add name data property." .
+                                                                     "v1.2: add additional genres. Add TrackPlay and associated object properties. Add name data property." ,
+                                                                     "v1.3: add album object properties and change the way TrackPlay works" .
 
 #################################################################
 #    Annotation properties
@@ -44,6 +45,17 @@ dcterms:title rdf:type owl:AnnotationProperty .
 #################################################################
 #    Object Properties
 #################################################################
+
+###  https://ml161.github.io/ns/group20-music-ontology#albumIncludes
+:albumIncludes rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf owl:topObjectProperty ;
+               owl:inverseOf :onAlbum ;
+               rdf:type owl:AsymmetricProperty ;
+               rdfs:domain :Album ;
+               rdfs:range :Track ;
+               rdfs:comment "Links a album to a track it includes" ;
+               rdfs:label "AlbumIncludes" .
+
 
 ###  https://ml161.github.io/ns/group20-music-ontology#classiffiedAs
 :classiffiedAs rdf:type owl:ObjectProperty ;
@@ -144,6 +156,16 @@ dcterms:title rdf:type owl:AnnotationProperty .
                rdfs:label "HasTechnician" .
 
 
+###  https://ml161.github.io/ns/group20-music-ontology#onAlbum
+:onAlbum rdf:type owl:ObjectProperty ;
+         rdfs:subPropertyOf owl:topObjectProperty ;
+         rdf:type owl:AsymmetricProperty ;
+         rdfs:domain :Track ;
+         rdfs:range :Album ;
+         rdfs:comment "Links a track to an album it features on" ;
+         rdfs:label "OnAlbum" .
+
+
 ###  https://ml161.github.io/ns/group20-music-ontology#onStation
 :onStation rdf:type owl:ObjectProperty ;
            rdfs:subPropertyOf owl:topObjectProperty ;
@@ -200,6 +222,24 @@ dcterms:title rdf:type owl:AnnotationProperty .
                rdfs:label "TechnicianFor" .
 
 
+###  https://ml161.github.io/ns/group20-music-ontology#track
+:track rdf:type owl:ObjectProperty ;
+       rdfs:subPropertyOf owl:topObjectProperty ;
+       rdf:type owl:SymmetricProperty ;
+       rdfs:domain [ rdf:type owl:Class ;
+                     owl:unionOf ( :Track
+                                   :TrackPlay
+                                 )
+                   ] ;
+       rdfs:range [ rdf:type owl:Class ;
+                    owl:unionOf ( :Track
+                                  :TrackPlay
+                                )
+                  ] ;
+       rdfs:comment "Symmetric link between Track and TrackPlay" ;
+       rdfs:label "Track" .
+
+
 #################################################################
 #    Data properties
 #################################################################
@@ -227,12 +267,6 @@ dcterms:title rdf:type owl:AnnotationProperty .
 ###  http://www.w3.org/2000/10/swap/pim/contact#Person
 <http://www.w3.org/2000/10/swap/pim/contact#Person> rdf:type owl:Class ;
                                                     owl:equivalentClass <http://xmlns.com/foaf/0.1/Person> ;
-                                                    owl:disjointWith :Album ,
-                                                                     :Artist ,
-                                                                     :Genre ,
-                                                                     :RadioShow ,
-                                                                     :RadioStation ,
-                                                                     :Track ;
                                                     rdfs:comment "A person." ;
                                                     rdfs:label "Person" .
 
@@ -243,32 +277,18 @@ owl:Thing rdfs:label "Thing" .
 
 ###  http://xmlns.com/foaf/0.1/Person
 <http://xmlns.com/foaf/0.1/Person> rdf:type owl:Class ;
-                                   owl:disjointWith :Album ,
-                                                    :Artist ,
-                                                    :Genre ,
-                                                    :RadioShow ,
-                                                    :RadioStation ,
-                                                    :Track ;
                                    rdfs:comment "A person." ;
                                    rdfs:label "Person" .
 
 
 ###  https://ml161.github.io/ns/group20-music-ontology#Album
 :Album rdf:type owl:Class ;
-       owl:disjointWith :Artist ,
-                        :Genre ,
-                        :RadioShow ,
-                        :RadioStation ,
-                        :Track ;
        rdfs:comment "A music album." ;
        rdfs:label "Album" .
 
 
 ###  https://ml161.github.io/ns/group20-music-ontology#Artist
 :Artist rdf:type owl:Class ;
-        owl:disjointWith :Genre ,
-                         :RadioShow ,
-                         :Track ;
         rdfs:comment "A music artist, including those with only one member" ;
         rdfs:label "Artist" .
 
@@ -293,9 +313,6 @@ owl:Thing rdfs:label "Thing" .
 
 ###  https://ml161.github.io/ns/group20-music-ontology#Genre
 :Genre rdf:type owl:Class ;
-       owl:disjointWith :RadioShow ,
-                        :RadioStation ,
-                        :Track ;
        rdfs:comment "A music genre." ;
        rdfs:label "Genre" .
 
@@ -303,7 +320,7 @@ owl:Thing rdfs:label "Thing" .
 ###  https://ml161.github.io/ns/group20-music-ontology#HipHop
 :HipHop rdf:type owl:Class ;
         rdfs:subClassOf :Genre ;
-        rdfs:label "Hip Hop" .
+        rdfs:label "HipHop" .
 
 
 ###  https://ml161.github.io/ns/group20-music-ontology#Jazz
@@ -332,8 +349,6 @@ owl:Thing rdfs:label "Thing" .
 
 ###  https://ml161.github.io/ns/group20-music-ontology#RadioShow
 :RadioShow rdf:type owl:Class ;
-           owl:disjointWith :RadioStation ,
-                            :Track ;
            rdfs:comment "A show created by poeple in a radio station." ;
            rdfs:label "RadioShow" .
 
@@ -358,7 +373,6 @@ owl:Thing rdfs:label "Thing" .
 
 ###  https://ml161.github.io/ns/group20-music-ontology#TrackPlay
 :TrackPlay rdf:type owl:Class ;
-           rdfs:subClassOf :Track ;
            rdfs:comment "A track play, by a radio station/DJ at a given time" ;
            rdfs:label "TrackPlay" .
 
@@ -397,8 +411,8 @@ owl:Thing rdfs:label "Thing" .
                                           rdfs:comment "An online account." .
 
 
-<http://xmlns.com/foaf/0.1/OnlineChatAccount> rdfs:label "Online Chat Account" ;
-                                              rdfs:comment "An online chat account." .
+<http://xmlns.com/foaf/0.1/OnlineChatAccount> rdfs:comment "An online chat account." ;
+                                              rdfs:label "Online Chat Account" .
 
 
 <http://xmlns.com/foaf/0.1/OnlineEcommerceAccount> rdfs:label "Online E-commerce Account" ;
@@ -473,8 +487,8 @@ owl:Thing rdfs:label "Thing" .
                                         rdfs:label "family_name" .
 
 
-<http://xmlns.com/foaf/0.1/firstName> rdfs:label "firstName" ;
-                                      rdfs:comment "The first name of a person." .
+<http://xmlns.com/foaf/0.1/firstName> rdfs:comment "The first name of a person." ;
+                                      rdfs:label "firstName" .
 
 
 <http://xmlns.com/foaf/0.1/focus> rdfs:label "focus" ;
@@ -493,8 +507,8 @@ owl:Thing rdfs:label "Thing" .
                                    rdfs:label "gender" .
 
 
-<http://xmlns.com/foaf/0.1/givenName> rdfs:comment "The given name of some person." ;
-                                      rdfs:label "Given name" .
+<http://xmlns.com/foaf/0.1/givenName> rdfs:label "Given name" ;
+                                      rdfs:comment "The given name of some person." .
 
 
 <http://xmlns.com/foaf/0.1/givenname> rdfs:comment "The given name of some person." ;
@@ -663,6 +677,37 @@ owl:Thing rdfs:label "Thing" .
 
 <http://xmlns.com/foaf/0.1/yahooChatID> rdfs:comment "A Yahoo chat ID" ;
                                         rdfs:label "Yahoo chat ID" .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( <http://www.w3.org/2000/10/swap/pim/contact#Person>
+                :Album
+                :Artist
+                :Genre
+                :RadioShow
+                :RadioStation
+                :Track
+                :TrackPlay
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Blues
+                :Classical
+                :Electronic
+                :HipHop
+                :Jazz
+                :LoFi
+                :Metal
+                :Pop
+                :Rock
+              )
+] .
 
 
 ###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
